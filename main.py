@@ -466,14 +466,16 @@ def delete_channel_list(m):
     bot.reply_to(m, "🗑 O'chirmoqchi bo'lgan majburiy kanalni tanlang:", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith('del_ch_'))
+@bot.callback_query_handler(func=lambda call: call.data.startswith('del_c'))
 def remove_channel_callback(call):
     if call.from_user.id != ADMIN_ID:
         return
+    
     ch_id = int(call.data.split('_')[2])
     cursor.execute("DELETE FROM channels WHERE id = ?", (ch_id,))
     conn.commit()
     bot.answer_callback_query(call.id, "O'chirildi ✅")
-    bot.edit_message_text("🗑 Tanlangan majburiy obuna kanali o'chirildi!", call.message.chat.id, call.message.message_id)
+    bot.edit_message_text("Tanlangan majburiy obuna kanali o'chirildi!", call.message.chat.id, call.message.message_id)
 
 @bot.message_handler(func=lambda m: m.from_user.id == ADMIN_ID and m.text == "➕ Qo'shimcha tugma qo'shish")
 def add_custom_button_start(m):
